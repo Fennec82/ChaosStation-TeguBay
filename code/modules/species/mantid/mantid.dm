@@ -136,7 +136,7 @@
 /datum/species/mantid/gyne
 
 	name =                    SPECIES_MANTID_GYNE
-	name_plural =             "Kharmaan Gynes"
+	name_plural =             "Kharmaani Gynes"
 
 	genders =                 list(FEMALE)
 	icobase =                 'icons/mob/human_races/species/ascent/gyne/body.dmi'
