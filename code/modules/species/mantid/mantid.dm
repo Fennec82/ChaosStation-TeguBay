@@ -1,7 +1,7 @@
 /datum/species/mantid
 
 	name =                   SPECIES_MANTID_ALATE
-	name_plural =            "Kharmaan Alates"
+	name_plural =            "Kharmaani Alates"
 	show_ssd =               "quiescent"
 
 	description = "When human explorers finally arrived at the outer reaches of Skrellian space, they hoped to find \
