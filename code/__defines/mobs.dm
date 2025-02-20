@@ -346,8 +346,8 @@
 #define SPECIES_NABBER         "Giant armoured serpentid"
 #define SPECIES_MONARCH_WORKER "Monarch Serpentid Worker"
 #define SPECIES_MONARCH_QUEEN  "Monarch Serpentid Queen"
-#define SPECIES_MANTID_ALATE   "Kharmaan Alate"
-#define SPECIES_MANTID_GYNE    "Kharmaan Gyne"
+#define SPECIES_MANTID_ALATE   "Kharmaani Alate"
+#define SPECIES_MANTID_GYNE    "Kharmaani Gyne"
 
 #define SURGERY_CLOSED 0
 #define SURGERY_OPEN 1
