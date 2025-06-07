@@ -163,10 +163,14 @@
 					bad_message = "\[IN [(available_in_days)] DAYS]"
 				else if(LAZYACCESS(job.minimum_character_age, bodytype) && user.client && (user.client.prefs.age < job.minimum_character_age[bodytype]))
 					bad_message = "\[MIN CHAR AGE: [job.minimum_character_age[bodytype]]]"
+				else if(LAZYACCESS(job.maximum_character_age, bodytype) && user.client && (user.client.prefs.age > job.maximum_character_age[bodytype]))
+					bad_message = "\[MAX CHAR AGE: [job.maximum_character_age[bodytype]]]"
 				else if(!job.is_species_allowed(S))
 					bad_message = "<b>\[SPECIES RESTRICTED]</b>"
 				else if (job.is_job_whitelisted(user.client))
 					bad_message = "<b>\[WHITELISTED]</b>"
+				else if (job.requires_trusted_player && !IS_TRUSTED_PLAYER(user.ckey))
+					bad_message = "<b>\[TRUSTED ONLY]</b>"
 				else if(!S.check_background(job, user.client.prefs))
 					bad_message = "<b>\[SPECIES BACKGROUND RESTRICTED]</b>"
 				else if(job.CheckBackground(user.client.prefs) != TRUE)
@@ -424,7 +428,7 @@
 
 		var/description = job.get_description_blurb()
 		if(description)
-			dat += html_encode(description)
+			dat += description
 		var/datum/browser/popup = new(user, "Job Info", "[capitalize(rank)]", 430, 520, src)
 		popup.set_content(jointext(dat,"<br>"))
 		popup.open()
