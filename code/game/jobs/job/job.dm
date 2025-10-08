@@ -21,6 +21,7 @@
 	var/department = null                 // Does this position have a department tag?
 	var/head_position = 0                 // Is this position Command?
 	var/minimum_character_age			  // List of species = age, if species is not here, it's auto-pass
+	var/maximum_character_age			  // List of species = age, if species is not here, it's auto-pass
 	var/create_record = 1                 // Do we announce/make records for people who spawn on this job?
 	var/is_semi_antagonist = FALSE        // Whether or not this job is given semi-antagonist status.
 	var/account_allowed = 1               // Does this job type come with a station account?
@@ -60,6 +61,7 @@
 
 	var/use_species_whitelist // If set, restricts the job to players with the given species whitelist. This does NOT restrict characters joining as the job to the species itself.
 	var/require_whitelist // If set to a string, requires a separate whitelist entry to use the job equal to the given string. Note: If not-null the check happens, so please don't set unless you want the whitelist.
+	var/requires_trusted_player = FALSE
 
 	var/required_language
 
@@ -68,7 +70,7 @@
 
 	/// Disallowed culture types. If the character has any of these - they are unable to join as that role.
 	var/list/culture_blacklist = list()
-	/// Required culture types, if any.
+	/// Required culture types, if any. Associated list by tag type!
 	var/list/culture_whitelist = list()
 
 /datum/job/New()
@@ -236,6 +238,10 @@
 		to_chat(feedback, SPAN_USERDANGER("\An [S] species whitelist is required for [title]."))
 		return TRUE
 
+	if(requires_trusted_player && !IS_TRUSTED_PLAYER(prefs.client.ckey))
+		to_chat(feedback, SPAN_USERDANGER("\A <b>Trusted Player</b> status is required for [title]."))
+		return TRUE
+
 	if(is_job_whitelisted(prefs.client))
 		to_chat(feedback, SPAN_USERDANGER("\An [require_whitelist] whitelist is required for [title]."))
 		return TRUE
@@ -255,6 +261,10 @@
 
 	if(LAZYACCESS(minimum_character_age, S.get_bodytype()) && (prefs.age < minimum_character_age[S.get_bodytype()]))
 		to_chat(feedback, SPAN_USERDANGER("Not old enough. Minimum character age is [minimum_character_age[S.get_bodytype()]]."))
+		return TRUE
+
+	if(LAZYACCESS(maximum_character_age, S.get_bodytype()) && (prefs.age > maximum_character_age[S.get_bodytype()]))
+		to_chat(feedback, SPAN_USERDANGER("Too old. Maximum character age is [maximum_character_age[S.get_bodytype()]]."))
 		return TRUE
 
 	if(!S.check_background(src, prefs))
@@ -291,9 +301,9 @@
 /datum/job/proc/CheckBackground(datum/preferences/prefs)
 	// The character MUST have any of these
 	if(LAZYLEN(culture_whitelist))
-		for(var/tag in prefs.cultural_info)
-			if(!(prefs.cultural_info[tag] in culture_whitelist))
-				return "Must have the following background: [english_list(culture_whitelist, "N/A", " or ")]."
+		for(var/tag in culture_whitelist)
+			if(!(prefs.cultural_info[tag] in culture_whitelist[tag]))
+				return "Must have the following background: [english_list(culture_whitelist[tag], "N/A", " or ")]."
 
 	// The character must NOT have any of these
 	if(LAZYLEN(culture_blacklist))
@@ -416,8 +426,8 @@
 	if(!SSjobs.job_icons[title])
 		var/mob/living/carbon/human/dummy/mannequin/mannequin = get_mannequin("#job_icon")
 		dress_mannequin(mannequin)
-		mannequin.dir = SOUTH
-		var/icon/preview_icon = getFlatIcon(mannequin)
+
+		var/icon/preview_icon = getFlatIcon(mannequin, SOUTH)
 		preview_icon.Scale(preview_icon.Width() * 4, preview_icon.Height() * 4) // Scaling here to prevent blurring in the browser. //old values were 2 instead of 4
 		SSjobs.job_icons[title] = preview_icon
 	return SSjobs.job_icons[title]
